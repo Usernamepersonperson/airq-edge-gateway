@@ -1,0 +1,51 @@
+# Demo stack. All credentials below are throwaway local-dev values.
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports: ["1883:1883"]
+    volumes: ["./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro"]
+
+  influxdb:
+    image: influxdb:2
+    ports: ["8086:8086"]
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: airq-dev-password
+      DOCKER_INFLUXDB_INIT_ORG: airq
+      DOCKER_INFLUXDB_INIT_BUCKET: airq
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: airq-dev-token
+    volumes: ["influx-data:/var/lib/influxdb2"]
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 5s
+      retries: 12
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    ports: ["3000:3000"]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: airq-dev-password
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/airq.json
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      influxdb: { condition: service_healthy }
+
+  gateway:
+    build: .
+    environment:
+      AIRQ_MQTT_HOST: mosquitto
+      AIRQ_INFLUX_TARGET: http://influxdb:8086/api/v2/write?org=airq&bucket=airq&precision=ns
+      AIRQ_INFLUX_TOKEN: airq-dev-token
+      AIRQ_QUEUE_PATH: /data/airq-queue.sqlite
+      AIRQ_INTERVAL: "5"
+    volumes: ["gateway-queue:/data"]
+    depends_on:
+      mosquitto: { condition: service_started }
+      influxdb: { condition: service_healthy }
+
+volumes:
+  influx-data:
+  gateway-queue:

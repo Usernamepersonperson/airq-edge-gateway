@@ -1,0 +1,14 @@
+apiVersion: 1
+datasources:
+  - name: airq-influx
+    uid: airq-influx
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    isDefault: true
+    jsonData:
+      version: Flux
+      organization: airq
+      defaultBucket: airq
+    secureJsonData:
+      token: airq-dev-token

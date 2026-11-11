@@ -1,0 +1,31 @@
+{
+  "claim": "An air-quality gateway that keeps every reading when the uplink drops, tested without hardware.",
+  "data_label": "simulated data: mock I2C bus, no real sensor",
+  "stats": [
+    [
+      "4 of 4",
+      "readings kept in order after an outage",
+      "green"
+    ],
+    [
+      "12 B",
+      "LoRaWAN-sized uplink payload",
+      "accent"
+    ],
+    [
+      "32",
+      "tests incl. real driver + CRC",
+      "amber"
+    ]
+  ],
+  "limit": "Never run on real hardware; the mock proves the gateway logic, not that a real chip answers the same.",
+  "alt": "Two stacked time series of 30 minutes of simulated room air: CO2 swinging through the ventilate bands and PM2.5 crossing the 15 microgram guideline line.",
+  "hashtags": [
+    "#IoT",
+    "#EdgeComputing",
+    "#LoRaWAN",
+    "#MQTT",
+    "#Python"
+  ],
+  "post": "Your air-quality sensor reads fine on the bench. Then the Wi-Fi drops for an hour and you lose the one stretch of data you cared about.\n\nI built a small open-source edge gateway for indoor air quality. It reads particle, VOC, NOx and CO2 sensors over I2C, works out dew point, absolute humidity and a PM2.5 mean, and ships it over MQTT, InfluxDB or HTTP. Anything bound for HTTP goes into a SQLite queue first and is deleted only after a 2xx.\n\nThere is no hardware needed: a mock I2C bus sits underneath the real sensor drivers, so command building and CRC checking run in every test and demo.\n\nMeasured on that mock setup: with the uplink port closed I sent three records, brought a server up, and all four arrived in order. The compact uplink payload is 12 bytes, small enough for LoRaWAN, and a generic JS decoder returns the same values as the Python encoder on shared test vectors. 32 Python tests pass in CI.\n\nWhat is not verified: it has never run on real hardware, so warm-up timing and wiring are untested, and the chart data is simulated.\n\nIf you run sensors in the field, what has bitten you hardest: lost uplinks, clock drift, or sensor warm-up?\n\nCode: https://github.com/Usernamepersonperson/airq-edge-gateway"
+}

@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "airq uplink payload (decoded)",
+  "type": "object",
+  "properties": {
+    "temperature": {
+      "title": "Temperature",
+      "description": "Air temperature in degrees Celsius (0.01 resolution).",
+      "type": [
+        "number",
+        "null"
+      ],
+      "unit": "°C"
+    },
+    "humidity": {
+      "title": "Humidity",
+      "description": "Relative humidity in % (0.01 resolution).",
+      "type": [
+        "number",
+        "null"
+      ],
+      "unit": "%",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "co2": {
+      "title": "CO2",
+      "description": "Carbon dioxide in ppm.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "unit": "ppm"
+    },
+    "pm2_5": {
+      "title": "PM2.5",
+      "description": "Particles with a diameter of less than 2.5 micrometers (0.1 resolution).",
+      "type": [
+        "number",
+        "null"
+      ],
+      "unit": "μg/m3"
+    },
+    "pm10": {
+      "title": "PM10",
+      "description": "Particles with a diameter of less than 10 micrometers (0.1 resolution).",
+      "type": [
+        "number",
+        "null"
+      ],
+      "unit": "μg/m3"
+    },
+    "vocIndex": {
+      "title": "VOC index",
+      "description": "Relative VOC index, 1-500 (100 = recent average). Transmitted with resolution 2.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 508
+    },
+    "noxIndex": {
+      "title": "NOx index",
+      "description": "Relative NOx index, 1-500. Transmitted with resolution 2.",
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 508
+    }
+  },
+  "required": [
+    "temperature",
+    "humidity",
+    "co2",
+    "pm2_5",
+    "pm10",
+    "vocIndex",
+    "noxIndex"
+  ]
+}
